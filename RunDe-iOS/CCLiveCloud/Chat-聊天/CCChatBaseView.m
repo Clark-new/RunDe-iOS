@@ -22,7 +22,7 @@
 @property (nonatomic, assign) BOOL                privateHidden;//是否隐藏私聊视图
 @property (nonatomic, copy)   PublicChatBlock     publicChatBlock;//公聊回调
 @property (nonatomic, strong) UILabel             * freshLabel;//刷新提示文字
-
+@property (nonatomic, assign) BOOL isAllowChat;
 
 
 @property(nonatomic,strong)CCLiveFuncView * liveFuncView;//打赏，评价等
@@ -48,8 +48,19 @@
         
         UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(tapAction)];
         [self addGestureRecognizer:tap];
+            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeBgColor:) name:@"allow_chat" object:nil];
     }
     return self;
+}
+// 参数类型是NSNotification
+- (void)changeBgColor:(NSNotification *)notification{
+
+  BOOL allow_question = [notification.userInfo[@"allowChat"] boolValue];
+  if (allow_question == YES) {
+      self.isAllowChat = YES;
+  } else {
+      self.isAllowChat = NO;
+  }
 }
 #pragma mark - 设置UI布局
 -(void)initUI{
@@ -223,6 +234,7 @@
     if (!_liveFuncView) {
         _liveFuncView = [[CCLiveFuncView alloc]init];
         _liveFuncView.hidden = YES;
+        _liveFuncView.isAllowChat = self.isAllowChat;
         [self addSubview:_liveFuncView];
         
         __weak typeof(self) weakSelf = self;

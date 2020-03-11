@@ -95,7 +95,6 @@
     NSMutableDictionary *info = [[[MPNowPlayingInfoCenter defaultCenter]nowPlayingInfo] mutableCopy];
     [info setObject:[NSNumber numberWithDouble:currentDurtion] forKey:MPNowPlayingInfoPropertyElapsedPlaybackTime];
     [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo:info];
-    NSLog(@"当前播放进度:%@", info);
 }
 #pragma mark - 更新当前回放速率
 -(void)updatePlayBackRate:(float)rate{

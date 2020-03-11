@@ -19,7 +19,7 @@
 @property (nonatomic, strong) UIScrollView *scrollView;
 @property (nonatomic,copy)NSAttributedString *attributedText;
 @property(nonatomic) NSRange selectedRange;
-
+@property (nonatomic,assign) BOOL isAllowChat;
 //默认样式
 @property(nonatomic,strong)UIButton * courseButton;
 @property(nonatomic,strong)UIButton * giftButton;
@@ -47,6 +47,7 @@
     if (self) {
         
         self.backgroundColor = [UIColor colorWithLight:[UIColor whiteColor] Dark:[UIColor colorWithRed:29/255.0 green:29/255.0 blue:29/255.0 alpha:1.0]];
+        self.isAllowChat = YES;
         [self addSubview:self.courseButton];
         [self.courseButton mas_makeConstraints:^(MASConstraintMaker *make) {
             make.left.equalTo(@15);
@@ -129,6 +130,11 @@
 -(void)giftButtonAction
 {
     //礼物
+    if (self.isAllowChat == YES) {
+        
+    } else {//禁言了
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"showBanChat" object:nil userInfo:nil];
+    }
      
 }
 
@@ -701,6 +707,19 @@
                                              selector:@selector(hiddenKeyBoard:)
                                                  name:@"keyBorad_hidden"
                                                object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeBgColor:) name:@"allow_chat" object:nil];
+     
+}
+// 参数类型是NSNotification
+
+- (void)changeBgColor:(NSNotification *)notification{
+
+  BOOL allow_question = [notification.userInfo[@"allowChat"] boolValue];
+  if (allow_question == YES) {
+      self.isAllowChat = YES;
+  } else {
+      self.isAllowChat = NO;
+  }
 }
 #pragma mark - 键盘事件
 -(void)hiddenKeyBoard:(NSNotification *)noti{

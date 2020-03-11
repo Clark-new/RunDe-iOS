@@ -149,6 +149,23 @@
     [_requestData getPublishingQuestionnaire];
 
 }
+/**
+ *    @brief    房间设置信息
+ *    dic{
+      "allow_chat" = true;//是否允许聊天
+      "allow_question" = true;//是否允许问答
+      "room_base_user_count" = 0;//房间基础在线人数
+      "source_type" = 0;//对应receivedSwitchSource方法的source_type
+}
+ *ps:当房间类型没有聊天或者问答时,对应的字段默认为true
+*/
+-(void)roomSettingInfo:(NSDictionary *)dic {
+    NSDictionary *dict = @{@"allowChat":dic[@"allow_chat"]};
+
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"allow_chat" object:nil userInfo:dict];
+
+
+}
 
 -(void)callOneAction
 {
@@ -752,6 +769,9 @@
     NSInteger mode = [modeDic[@"mode"] integerValue];
     if (mode == 1) {
         return;
+    } else {
+        NSDictionary *dict = @{@"allowChat":@"false"};
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"allow_chat" object:nil userInfo:dict];
     }
 //    NSString *str = ALERT_BANCHAT(mode == 1);
     //添加禁言弹窗
@@ -765,6 +785,9 @@
     NSInteger mode = [modeDic[@"mode"] integerValue];
     if (mode == 1) {
         return;
+    } else {
+        NSDictionary *dict = @{@"allowChat":@"true"};
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"allow_chat" object:nil userInfo:dict];
     }
 //    NSString *str = ALERT_UNBANCHAT(mode == 1);
     //添加禁言弹窗
@@ -1003,7 +1026,7 @@
 //#endif
 #pragma mark - 添加通知
 -(void)addObserver {
-    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(information:) name:@"showBanChat" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appWillEnterBackgroundNotification) name:UIApplicationDidEnterBackgroundNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appWillEnterForegroundNotification) name:UIApplicationWillEnterForegroundNotification object:nil];
     

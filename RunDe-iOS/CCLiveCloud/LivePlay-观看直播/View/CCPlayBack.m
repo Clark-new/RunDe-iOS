@@ -942,7 +942,6 @@
             //获取当前播放时间和视频总时长
             NSTimeInterval position = (int)round(self.requestDataPlayBack.currentPlaybackTime);
             NSTimeInterval duration = (int)round(self.requestDataPlayBack.playerDuration);
-            NSLog(@"时间是%f--%f",position,duration);
             
             //存在播放器最后一点不播放的情况，所以把进度条的数据对到和最后一秒想同就可以了
             if(duration - position == 1 && (self.sliderValue == position || self.sliderValue == duration)) {

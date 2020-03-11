@@ -19,7 +19,7 @@
         //96 + bottom
         self.frame = CGRectMake(0, 0, SCREEN_WIDTH, 97 + TabbarSafeBottomMargin);
         self.backgroundColor = [UIColor colorWithLight:[UIColor colorWithRed:245/255.0 green:241/255.0 blue:246/255.0 alpha:1.0] Dark:[UIColor colorWithRed:29/255.0 green:29/255.0 blue:29/255.0 alpha:1.0]];
-        
+        self.isAllowChat = YES;
         NSArray * title = @[@"打赏",@"评价",@"咨询"];
         NSArray * images = @[@"tool_bar_reward.png",@"tool_bar_evaluation.png",@"tool_bar_advisory.png"];
         for (int i = 0; i < title.count; i++) {
@@ -38,10 +38,12 @@
                 make.width.and.height.equalTo(@50);
             }];
         }
-        
+
     }
     return self;
 }
+
+
 
 -(void)setHidden:(BOOL)hidden
 {
@@ -56,9 +58,13 @@
 {
     //100 + i
     if (button.tag == 100) {
-        //打赏
-        CCRewardTeacherView * rewardTeacherView = [[CCRewardTeacherView alloc]init];
-        [rewardTeacherView show];
+        if (self.isAllowChat == YES) {
+            //打赏
+            CCRewardTeacherView * rewardTeacherView = [[CCRewardTeacherView alloc]init];
+            [rewardTeacherView show];
+        } else {
+             [[NSNotificationCenter defaultCenter] postNotificationName:@"showBanChat" object:nil userInfo:nil];
+        }
     }
     if (button.tag == 101) {
         //评价

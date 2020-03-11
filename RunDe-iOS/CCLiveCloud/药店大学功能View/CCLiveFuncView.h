@@ -17,6 +17,7 @@ typedef void(^CCLiveFuncViewHiddenValueChange)(BOOL isHidden);
 @interface CCLiveFuncView : UIView
 
 @property(nonatomic,copy)CCLiveFuncViewHiddenValueChange hiddenValueChange;
+@property(nonatomic,assign)BOOL isAllowChat;
 
 @end
 

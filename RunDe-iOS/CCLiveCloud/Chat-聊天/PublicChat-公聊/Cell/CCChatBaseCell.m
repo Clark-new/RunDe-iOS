@@ -277,9 +277,12 @@
             }];
         });
     }else{
-     
+        
 //        if(height < CCGetRealFromPt(80)) {//计算高度
-        if (model.textSize.height < (_contentLabel.font.lineHeight * 2 + CCGetRealFromPt(36))) {
+        NSLog(@"11111 textSize.height : %f , %f",model.textSize.height,(_contentLabel.font.lineHeight * 2 + CCGetRealFromPt(36)));
+        
+//        if (model.textSize.height < (_contentLabel.font.lineHeight * 2 + CCGetRealFromPt(36))) {
+        if (model.textSize.height < (_contentLabel.font.lineHeight * 2)) {
 
             [_bgBtn mas_remakeConstraints:^(MASConstraintMaker *make) {
                 make.left.mas_equalTo(self.headBtn.mas_right);
