@@ -34,6 +34,9 @@
     UIButton * button = [UIButton buttonWithType:buttonType];
     button.frame = frame;
     [button setTitle:title forState:UIControlStateNormal];
+    if (image == nil) {
+        image = @"";
+    }
     [button setImage:[UIImage imageNamed:image] forState:UIControlStateNormal];
     [button addTarget:target action:action forControlEvents:UIControlEventTouchUpInside];
     if (tag != 0) {

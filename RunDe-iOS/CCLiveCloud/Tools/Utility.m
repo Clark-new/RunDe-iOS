@@ -111,7 +111,7 @@
 }
 
 //+ (NSMutableAttributedString *)exchangeString:(NSString *)string withText:(NSString *)text imageName:(NSString *)imageName
-+ (NSMutableAttributedString *)exchangeString:(NSString *)string withText:(NSString *)text imageName:(NSString *)imageName RefreshCell:(void (^)())refreshCell
++ (NSMutableAttributedString *)exchangeString:(NSString *)string withText:(NSString *)text imageName:(NSString *)imageName RefreshCell:(void (^)(void))refreshCell
 {
     //1、创建一个可变的属性字符串
     NSMutableAttributedString *attributeString = [[NSMutableAttributedString alloc] initWithString:text];
@@ -143,14 +143,23 @@
             UIImage *image = [[SDImageCache sharedImageCache] imageFromCacheForKey:imageKey];
             if (!image) {
                 
-                [[SDWebImagePrefetcher sharedImagePrefetcher] prefetchURLs:@[url] progress:^(NSUInteger noOfFinishedUrls, NSUInteger noOfTotalUrls) {
-                        
-                } completed:^(NSUInteger noOfFinishedUrls, NSUInteger noOfSkippedUrls) {
-                    if (refreshCell) {
-                        refreshCell();
+//                [[SDWebImagePrefetcher sharedImagePrefetcher] prefetchURLs:@[url] progress:^(NSUInteger noOfFinishedUrls, NSUInteger noOfTotalUrls) {
+//
+//                } completed:^(NSUInteger noOfFinishedUrls, NSUInteger noOfSkippedUrls) {
+//                    if (refreshCell) {
+//                        refreshCell();
+//                    }
+//                }];
+                [[SDWebImageDownloader sharedDownloader] downloadImageWithURL:url options:SDWebImageDownloaderLowPriority progress:^(NSInteger receivedSize, NSInteger expectedSize, NSURL * _Nullable targetURL) {
+//                    NSLog(@"显示当前进度");
+                } completed:^(UIImage * _Nullable image, NSData * _Nullable data, NSError * _Nullable error, BOOL finished) {
+//                    NSLog(@"下载完成");
+                    if (!error && refreshCell) {
+                         refreshCell();
                     }
                 }];
                 image = [UIImage imageNamed:@"tool_bar_gift.png"];
+
             }
             textAttachment.image = image;
             textAttachment.bounds = CGRectMake(0, -10, 30, 30);

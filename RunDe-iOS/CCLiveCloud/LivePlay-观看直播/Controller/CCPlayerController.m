@@ -29,6 +29,7 @@
 #import "Reachability.h"
 #import "CCPublicInteractionView.h"
 #import "CCGiftRewardPopView.h"
+#import <HDMarqueeTool/HDMarqueeTool.h>
 //#ifdef LockView
 #import "CCLockView.h"//锁屏界面
 //#endif
@@ -101,6 +102,10 @@
 @property(nonatomic,strong)CCGiftRewardPopView * giftView;//礼物view
 @property(nonatomic,strong)CCGiftRewardPopView * rewardView;//打赏view
 @property (nonatomic,assign)BOOL                     changeGift;//换行显示打赏和礼物
+//**************************** marquee ****************************
+@property(nonatomic,strong)HDMarqueeView * marqueeView;
+@property(nonatomic,strong)HDMarqueeView * marqueeView1;
+@property(nonatomic,strong)NSDictionary * jsonDict;
 
 //#ifdef LockView
 #pragma make - 锁屏界面
@@ -149,6 +154,77 @@
     [_requestData getPublishingQuestionnaire];
 
 }
+- (void)receivedMarqueeInfo:(NSDictionary *)dic {
+    if (dic == nil) {
+        return;
+    }
+    self.jsonDict = dic;
+    {
+
+        CGFloat width = 0.0;
+        CGFloat height = 0.0;
+        self.marqueeView = [[HDMarqueeView alloc]init];
+        self.marqueeView1 = [[HDMarqueeView alloc]init];
+        HDMarqueeViewStyle style = [[self.jsonDict objectForKey:@"type"] isEqualToString:@"text"] ? HDMarqueeViewStyleTitle : HDMarqueeViewStyleImage;
+        self.marqueeView.style = style;
+        self.marqueeView1.style = style;
+        self.marqueeView.repeatCount = [[self.jsonDict objectForKey:@"loop"] integerValue];
+        self.marqueeView1.repeatCount = [[self.jsonDict objectForKey:@"loop"] integerValue];
+        if (style == HDMarqueeViewStyleTitle) {
+            NSDictionary * textDict = [self.jsonDict objectForKey:@"text"];
+            NSString * text = [textDict objectForKey:@"content"];
+            UIColor * textColor = [UIColor colorWithHexString:[textDict objectForKey:@"color"] alpha:1.0f];
+            UIFont * textFont = [UIFont systemFontOfSize:[[textDict objectForKey:@"font_size"] floatValue]];
+            
+            self.marqueeView.text = text;
+            self.marqueeView1.text = text;
+            self.marqueeView.textAttributed = @{NSFontAttributeName:textFont,NSForegroundColorAttributeName:textColor};
+            self.marqueeView1.textAttributed = @{NSFontAttributeName:textFont,NSForegroundColorAttributeName:textColor};
+            CGSize textSize = [self.marqueeView.text calculateRectWithSize:CGSizeMake(SCREEN_WIDTH, SCREENH_HEIGHT) Font:textFont WithLineSpace:0];
+            width = textSize.width;
+            height = textSize.height;
+            
+        }else{
+            NSDictionary * imageDict = [self.jsonDict objectForKey:@"image"];
+            NSURL * imageURL = [NSURL URLWithString:[imageDict objectForKey:@"image_url"]];
+            self.marqueeView.imageURL = imageURL;
+            self.marqueeView1.imageURL = imageURL;
+            width = [[imageDict objectForKey:@"width"] floatValue];
+            height = [[imageDict objectForKey:@"height"] floatValue];
+
+        }
+        self.marqueeView.frame = CGRectMake(0, 0, width, height);
+        self.marqueeView1.frame = CGRectMake(0, 0, width, height);
+        //处理action
+        NSArray * setActionsArray = [self.jsonDict objectForKey:@"action"];
+        
+        NSMutableArray <HDMarqueeAction *> * actions = [NSMutableArray array];
+        for (int i = 0; i < setActionsArray.count; i++) {
+            NSDictionary * actionDict = [setActionsArray objectAtIndex:i];
+            CGFloat duration = [[actionDict objectForKey:@"duration"] floatValue];
+            NSDictionary * startDict = [actionDict objectForKey:@"start"];
+            NSDictionary * endDict = [actionDict objectForKey:@"end"];
+
+            HDMarqueeAction * marqueeAction = [[HDMarqueeAction alloc]init];
+            marqueeAction.duration = duration;
+            marqueeAction.startPostion.alpha = [[startDict objectForKey:@"alpha"] floatValue];
+            marqueeAction.startPostion.pos = CGPointMake([[startDict objectForKey:@"xpos"] floatValue], [[startDict objectForKey:@"ypos"] floatValue]);
+            marqueeAction.endPostion.alpha = [[endDict objectForKey:@"alpha"] floatValue];
+            marqueeAction.endPostion.pos = CGPointMake([[endDict objectForKey:@"xpos"] floatValue], [[endDict objectForKey:@"ypos"] floatValue]);
+            
+            [actions addObject:marqueeAction];
+        }
+        
+        self.marqueeView.actions = actions;
+        self.marqueeView1.actions = actions;
+        self.marqueeView.fatherView = self.playerView.smallVideoView;
+        self.marqueeView1.fatherView = self.playerView;
+        self.playerView.smallVideoView.layer.masksToBounds = YES;
+
+        }
+    
+}
+
 /**
  *    @brief    房间设置信息
  *    dic{
@@ -256,7 +332,13 @@
 
 - (void)docLoadCompleteWithIndex:(NSInteger)index {
     if (index == 0) {
-        [_requestData changeDocWebColor:@"000000"];
+//        [_requestData changeDocWebColor:@"000000"];
+         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+             [self.playerView.smallVideoView addSubview:self.marqueeView];
+             [self.playerView addSubview:self.marqueeView1];
+             [self.marqueeView startMarquee];
+             [self.marqueeView1 startMarquee];
+         });
     }
 }
 #pragma mark - 私有方法
@@ -318,15 +400,15 @@
         [_requestData changeDocFrame:CGRectMake(0, 0,self.playerView.frame.size.width, self.playerView.frame.size.height)];
         [_requestData changePlayerFrame:CGRectMake(0, 0, self.playerView.smallVideoView.frame.size.width, self.playerView.smallVideoView.frame.size.height)];
         [self.playerView.smallVideoView bringSubviewToFront:self.playerView.smallVideoView.smallCloseBtn];
-
     }else{
         [_requestData changeDocParent:self.playerView.smallVideoView];
         [_requestData changePlayerParent:self.playerView];
         [_requestData changePlayerFrame:CGRectMake(0, 0,self.playerView.frame.size.width, self.playerView.frame.size.height)];
         [_requestData changeDocFrame:CGRectMake(0, 0, self.playerView.smallVideoView.frame.size.width, self.playerView.smallVideoView.frame.size.height)];
         [self.playerView.smallVideoView bringSubviewToFront:self.playerView.smallVideoView.smallCloseBtn];
-
     }
+    [self.playerView.smallVideoView bringSubviewToFront:self.marqueeView];
+    [self.playerView bringSubviewToFront:self.marqueeView1];
 }
 
 /**
@@ -345,7 +427,13 @@
     } else {
         [_requestData changeDocFrame:self.view.frame];
     }
-    NSLog(@"大小是%@---%@",NSStringFromCGRect(self.view.frame),NSStringFromCGRect(self.playerView.frame));
+ dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+     
+     NSLog(@"%@ %@",self.marqueeView.fatherView,self.marqueeView1.fatherView);
+     
+     [self.marqueeView startMarquee];
+     [self.marqueeView1 startMarquee];
+ });
 }
 /**
  点击暂停/继续按钮
@@ -1403,6 +1491,8 @@
          当你点击的时候能拿到对应的参数,存起来即可,SDK 配置参数均为读取存起来的值
          这样可以直接读取了
          */
+        [self.marqueeView removeFromSuperview];
+        [self.marqueeView1 removeFromSuperview];
         [self stopTimer];
         [self.requestData requestCancel];
         [self.lockView removeFromSuperview];
@@ -1427,6 +1517,8 @@
             make.top.equalTo(self.view).offset(SCREEN_STATUS);
         }];
     } else {//回放切直播
+        [self.playerView1.marqueeView1 removeFromSuperview];
+        [self.playerView1.marqueeView removeFromSuperview];
         [self.playerView1.lockView removeFromSuperview];
         [self.playerView1 playBackRequestCancel];
         [self.playerView1.smallVideoView removeFromSuperview];

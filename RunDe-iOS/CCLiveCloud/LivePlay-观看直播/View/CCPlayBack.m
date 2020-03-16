@@ -35,6 +35,9 @@
 @property (nonatomic,strong)UIView                      * oncePlayerView;//临时playerView(双击ppt进入横屏调用)
 @property (nonatomic,strong)UILabel                  *label;
 
+@property(nonatomic,strong)NSDictionary * jsonDict;
+
+
 @end
 @implementation CCPlayBack
 
@@ -83,6 +86,83 @@
     
     /* 设置playerView */
     [self showLoadingView];//显示视频加载中提示
+}
+- (void)receivedMarqueeInfo:(NSDictionary *)dic {
+    if (dic == nil) {
+        return;
+    }
+    self.jsonDict = dic;
+                    CGFloat width = 0.0;
+                  CGFloat height = 0.0;
+                  self.marqueeView = [[HDMarqueeView alloc]init];
+                  self.marqueeView1 = [[HDMarqueeView alloc]init];
+                  HDMarqueeViewStyle style = [[self.jsonDict objectForKey:@"type"] isEqualToString:@"text"] ? HDMarqueeViewStyleTitle : HDMarqueeViewStyleImage;
+                  self.marqueeView.style = style;
+                  self.marqueeView1.style = style;
+                  self.marqueeView.repeatCount = [[self.jsonDict objectForKey:@"loop"] integerValue];
+                  self.marqueeView1.repeatCount = [[self.jsonDict objectForKey:@"loop"] integerValue];
+                  if (style == HDMarqueeViewStyleTitle) {
+                      NSDictionary * textDict = [self.jsonDict objectForKey:@"text"];
+                      NSString * text = [textDict objectForKey:@"content"];
+                      UIColor * textColor = [UIColor colorWithHexString:[textDict objectForKey:@"color"] alpha:1.0f];
+                      UIFont * textFont = [UIFont systemFontOfSize:[[textDict objectForKey:@"font_size"] floatValue]];
+                      
+                      self.marqueeView.text = text;
+                      self.marqueeView1.text = text;
+                      self.marqueeView.textAttributed = @{NSFontAttributeName:textFont,NSForegroundColorAttributeName:textColor};
+                      self.marqueeView1.textAttributed = @{NSFontAttributeName:textFont,NSForegroundColorAttributeName:textColor};
+                      CGSize textSize = [self.marqueeView.text calculateRectWithSize:CGSizeMake(SCREEN_WIDTH, SCREENH_HEIGHT) Font:textFont WithLineSpace:0];
+                      width = textSize.width;
+                      height = textSize.height;
+                      
+                  }else{
+                      NSDictionary * imageDict = [self.jsonDict objectForKey:@"image"];
+                      NSURL * imageURL = [NSURL URLWithString:[imageDict objectForKey:@"image_url"]];
+                      self.marqueeView.imageURL = imageURL;
+                      self.marqueeView1.imageURL = imageURL;
+                      width = [[imageDict objectForKey:@"width"] floatValue];
+                      height = [[imageDict objectForKey:@"height"] floatValue];
+
+                  }
+                  self.marqueeView.frame = CGRectMake(0, 0, width, height);
+                  self.marqueeView1.frame = CGRectMake(0, 0, width, height);
+                  //处理action
+                  NSArray * setActionsArray = [self.jsonDict objectForKey:@"action"];
+                  
+                  NSMutableArray <HDMarqueeAction *> * actions = [NSMutableArray array];
+                  for (int i = 0; i < setActionsArray.count; i++) {
+                      NSDictionary * actionDict = [setActionsArray objectAtIndex:i];
+                      CGFloat duration = [[actionDict objectForKey:@"duration"] floatValue];
+                      NSDictionary * startDict = [actionDict objectForKey:@"start"];
+                      NSDictionary * endDict = [actionDict objectForKey:@"end"];
+
+                      HDMarqueeAction * marqueeAction = [[HDMarqueeAction alloc]init];
+                      marqueeAction.duration = duration;
+                      marqueeAction.startPostion.alpha = [[startDict objectForKey:@"alpha"] floatValue];
+                      marqueeAction.startPostion.pos = CGPointMake([[startDict objectForKey:@"xpos"] floatValue], [[startDict objectForKey:@"ypos"] floatValue]);
+                      marqueeAction.endPostion.alpha = [[endDict objectForKey:@"alpha"] floatValue];
+                      marqueeAction.endPostion.pos = CGPointMake([[endDict objectForKey:@"xpos"] floatValue], [[endDict objectForKey:@"ypos"] floatValue]);
+                      
+                      [actions addObject:marqueeAction];
+                  }
+                  
+                  self.marqueeView.actions = actions;
+                  self.marqueeView1.actions = actions;
+                  self.marqueeView.fatherView = self.smallVideoView;
+                  self.marqueeView1.fatherView = self;
+                  self.smallVideoView.layer.masksToBounds = YES;
+             
+    
+}
+- (void)docLoadCompleteWithIndex:(NSInteger)index {
+    if (index == 0) {
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self.smallVideoView addSubview:self.marqueeView];
+        [self addSubview:self.marqueeView1];
+        [self.marqueeView startMarquee];
+        [self.marqueeView1 startMarquee];
+    });
+    }
 }
 #pragma mark- 必须实现的代理方法
 
@@ -829,6 +909,13 @@
 #warning 需要处理全屏
         if (self.delegate) {
             [self.delegate quanpingPlayBackBtnClicked:_changeButton.tag];
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                
+                NSLog(@"%@ %@",self.marqueeView.fatherView,self.marqueeView1.fatherView);
+                
+                [self.marqueeView startMarquee];
+                [self.marqueeView1 startMarquee];
+            });
         }
 //        self.quanpingAction(_changeButton.tag);
 //        self.quanpingChangeAction(sender.tag);
@@ -879,6 +966,8 @@
     
     [self bringSubviewToFront:self.topShadowView];
     [self bringSubviewToFront:self.bottomShadowView];
+    [self.smallVideoView bringSubviewToFront:self.marqueeView];
+    [self bringSubviewToFront:self.marqueeView1];
 }
 //结束直播和退出全屏
 - (void)backButtonClick:(UIButton *)sender {

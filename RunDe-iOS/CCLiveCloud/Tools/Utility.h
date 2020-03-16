@@ -23,6 +23,6 @@
  */
 //+ (NSMutableAttributedString *)exchangeString:(NSString *)string withText:(NSString *)text imageName:(NSString *)imageName;
 
-+ (NSMutableAttributedString *)exchangeString:(NSString *)string withText:(NSString *)text imageName:(NSString *)imageName RefreshCell:(void (^)())refreshCell;
++ (NSMutableAttributedString *)exchangeString:(NSString *)string withText:(NSString *)text imageName:(NSString *)imageName RefreshCell:(void (^)(void))refreshCell;
 
 @end

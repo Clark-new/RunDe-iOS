@@ -778,8 +778,11 @@
     //        make.size.mas_equalTo(CGSizeMake(CCGetRealFromPt(80),CCGetRealFromPt(80)));
     //    }];
     [_headBtn layoutIfNeeded];
-    //根据身份为头像设置身份标示
-    _imageid.image = [UIImage imageNamed:model.headTag];
+    //根据身份为头像设置身份标
+    if (model.headTag != nil) {
+        _imageid.image = [UIImage imageNamed:model.headTag];
+    }
+    
     [_imageid mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.edges.equalTo(_headBtn);
     }];

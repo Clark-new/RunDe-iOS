@@ -42,6 +42,8 @@
 		4B3D61E6236A8B430053AC52 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B3D61E3236A8B420053AC52 /* Reachability.m */; };
 		4B3D61FD2373C9990053AC52 /* DWDrmServer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B3D61F72373C9980053AC52 /* DWDrmServer.framework */; settings = {ATTRIBUTES = (Required, ); }; };
 		4B436D95235FF4A900B2D2A8 /* CCPlayBack.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B436D94235FF4A900B2D2A8 /* CCPlayBack.m */; };
+		4B5D8E52241A1A0F0096D645 /* marquee.json in Resources */ = {isa = PBXBuildFile; fileRef = 4B5D8E51241A1A0F0096D645 /* marquee.json */; };
+		4BA4023A241B59B7009583FC /* HDMarqueeTool.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4BA40239241B59B7009583FC /* HDMarqueeTool.framework */; };
 		5202E5C3219D22C100C13EF9 /* LoadingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5202E5C1219D22C100C13EF9 /* LoadingView.m */; };
 		5202E5C6219D233100C13EF9 /* UITouchView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5202E5C4219D233000C13EF9 /* UITouchView.m */; };
 		5202E5C921A249CC00C13EF9 /* InformationShowView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5202E5C821A249CC00C13EF9 /* InformationShowView.m */; };
@@ -274,6 +276,8 @@
 		4B3D61F82373C9980053AC52 /* CCSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CCSDK.framework; path = "CCLiveCloud/Live_iOS_Play_SDK(有连麦)/CCSDK.framework"; sourceTree = "<group>"; };
 		4B436D93235FF4A900B2D2A8 /* CCPlayBack.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CCPlayBack.h; sourceTree = "<group>"; };
 		4B436D94235FF4A900B2D2A8 /* CCPlayBack.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CCPlayBack.m; sourceTree = "<group>"; };
+		4B5D8E51241A1A0F0096D645 /* marquee.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = marquee.json; sourceTree = "<group>"; };
+		4BA40239241B59B7009583FC /* HDMarqueeTool.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = HDMarqueeTool.framework; sourceTree = "<group>"; };
 		5202E5C1219D22C100C13EF9 /* LoadingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoadingView.m; sourceTree = "<group>"; };
 		5202E5C2219D22C100C13EF9 /* LoadingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoadingView.h; sourceTree = "<group>"; };
 		5202E5C4219D233000C13EF9 /* UITouchView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UITouchView.m; sourceTree = "<group>"; };
@@ -514,6 +518,7 @@
 				52F8BBEA2231268B00B7CC1B /* libz.tbd in Frameworks */,
 				52F8BBE92231268300B7CC1B /* libz.1.1.3.tbd in Frameworks */,
 				7052B44A222FBF6900CF8656 /* SystemConfiguration.framework in Frameworks */,
+				4BA4023A241B59B7009583FC /* HDMarqueeTool.framework in Frameworks */,
 				52B9173B21DDD8CF00C3AE9D /* VideoToolbox.framework in Frameworks */,
 				6E1E7835921085EF61E23DB4 /* Pods_CCLiveCloud.framework in Frameworks */,
 			);
@@ -539,6 +544,8 @@
 		04C879622355CCBF007F54BB /* 药店大学功能View */ = {
 			isa = PBXGroup;
 			children = (
+				4BA40239241B59B7009583FC /* HDMarqueeTool.framework */,
+				4B5D8E51241A1A0F0096D645 /* marquee.json */,
 				04C879632355CD2F007F54BB /* CCLiveFuncView.h */,
 				04C879642355CD2F007F54BB /* CCLiveFuncView.m */,
 				0460BB73235854BE008B33B1 /* CCPopBaseView.h */,
@@ -1283,6 +1290,7 @@
 				529D538B2179750D0093F724 /* Assets.xcassets in Resources */,
 				70480D57223A4D8C00368084 /* gift_loading_gif@3x.gif in Resources */,
 				4B1AF661237B9FA400997C99 /* Emotion.bundle in Resources */,
+				4B5D8E52241A1A0F0096D645 /* marquee.json in Resources */,
 				4B1AF655237B9FA400997C99 /* Emotions.plist in Resources */,
 				70E04F5F228517DD00A735FC /* noble_background_image@2x.png in Resources */,
 			);
@@ -1653,6 +1661,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/CCLiveCloud/CCSDK",
 					"$(PROJECT_DIR)/CCLiveCloud/Live_iOS_Play_SDK(有连麦)",
+					"$(PROJECT_DIR)/CCLiveCloud/药店大学功能View",
 				);
 				GCC_INPUT_FILETYPE = automatic;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -1704,6 +1713,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/CCLiveCloud/CCSDK",
 					"$(PROJECT_DIR)/CCLiveCloud/Live_iOS_Play_SDK(有连麦)",
+					"$(PROJECT_DIR)/CCLiveCloud/药店大学功能View",
 				);
 				GCC_INPUT_FILETYPE = automatic;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
