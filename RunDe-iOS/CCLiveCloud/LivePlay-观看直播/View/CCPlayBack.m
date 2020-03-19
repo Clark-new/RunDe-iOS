@@ -213,7 +213,10 @@
  */
 -(void)roomInfo:(NSDictionary *)dic {
     _roomName = dic[@"name"];
-    [self addSmallView];
+    NSInteger type = [dic[@"templateType"] integerValue];
+       if (type == 4 || type == 5) {
+           [self addSmallView];
+       }
 
 }
 #pragma mark- 回放的开始时间和结束时间
