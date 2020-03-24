@@ -397,6 +397,10 @@
     } else {
         height = textSize.height + CCGetRealFromPt(18) * 2 + 20;
     };
+    if ([model.fromuserrole isEqualToString:@"publisher"]) {
+        textSize.width += 50;
+    }
+
     model.textSize = textSize;
     return height;
 }

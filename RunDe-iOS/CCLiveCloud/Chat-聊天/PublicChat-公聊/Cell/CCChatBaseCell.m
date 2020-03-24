@@ -256,16 +256,19 @@
             [weakSelf getTextCellHeightWith:model];
             
             if (height < CCGetRealFromPt(80)) {
+                _contentLabel.textAlignment = NSTextAlignmentRight;
                 [_bgBtn mas_remakeConstraints:^(MASConstraintMaker *make) {
                     make.right.mas_equalTo(self.headBtn.mas_left).offset(-5);
                     make.top.mas_equalTo(self.headBtn);
-                    make.size.mas_equalTo(CGSizeMake((model.noNameSize.width +10), CCGetRealFromPt(60)));
+                    make.size.mas_equalTo(CGSizeMake((model.textSize.width +10), CCGetRealFromPt(60)));
                 }];
             }else{
+                _contentLabel.textAlignment = NSTextAlignmentLeft;
+
                 [_bgBtn mas_remakeConstraints:^(MASConstraintMaker *make) {
                     make.right.mas_equalTo(self.headBtn.mas_left).offset(-5);
                     make.top.mas_equalTo(self.headBtn);
-                    make.size.mas_equalTo(CGSizeMake((model.noNameSize.width +10), height));
+                    make.size.mas_equalTo(CGSizeMake((model.textSize.width +10), height));
                 }];
             }
             [self.bgBtn layoutIfNeeded];
@@ -277,7 +280,7 @@
             }];
         });
     }else{
-        
+//        _contentLabel.textAlignment = NSTextAlignmentLeft;
 //        if(height < CCGetRealFromPt(80)) {//计算高度
         NSLog(@"11111 textSize.height : %f , %f",model.textSize.height,(_contentLabel.font.lineHeight * 2 + CCGetRealFromPt(36)));
         
