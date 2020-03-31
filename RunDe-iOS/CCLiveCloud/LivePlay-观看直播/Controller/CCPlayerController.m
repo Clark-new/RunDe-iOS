@@ -697,7 +697,7 @@
                result = [msg substringWithRange:range];
                break;
             }
-    if (urlArr.count >0) {
+    if (urlArr.count >0 && [msg containsString:@"cem_"]) {
         NSArray *array = [msg componentsSeparatedByString:@"]"];
         NSArray *array1 = [msg componentsSeparatedByString:@"["];
         NSDictionary * animateDic = @{@"name":dic[@"username"],
